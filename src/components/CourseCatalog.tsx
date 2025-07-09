@@ -1,238 +1,205 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Clock, Users, Star, Search, Filter, Play, CheckCircle, Award, Lightbulb } from "lucide-react";
+import { BookOpen, Clock, Users, Star, Search, Filter, Play, CheckCircle, Award, TrendingUp } from "lucide-react";
 
 interface Course {
-  id: string;
+  id: number;
   title: string;
   description: string;
   instructor: string;
   duration: string;
   level: "Beginner" | "Intermediate" | "Advanced";
-  category: string;
   rating: number;
   students: number;
-  lessons: number;
-  price: string;
-  thumbnail: string;
-  skills: string[];
+  price: number;
+  category: string;
   progress?: number;
 }
 
 const CourseCatalog = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const courses: Course[] = [
     {
-      id: "1",
-      title: "Complete Calculus Mastery",
-      description: "Master calculus from basic limits to advanced integration techniques. Perfect for high school and college students.",
+      id: 1,
+      title: "Introduction to Machine Learning",
+      description: "Learn the fundamentals of ML algorithms and their applications",
       instructor: "Dr. Sarah Johnson",
-      duration: "12 weeks",
-      level: "Intermediate",
-      category: "Mathematics",
+      duration: "8 weeks",
+      level: "Beginner",
       rating: 4.8,
       students: 15420,
-      lessons: 48,
-      price: "Free",
-      thumbnail: "🧮",
-      skills: ["Limits", "Derivatives", "Integrals", "Applications"],
+      price: 99,
+      category: "Technology",
       progress: 65
     },
     {
-      id: "2",
-      title: "Biology Fundamentals",
-      description: "Explore the building blocks of life, from cells to ecosystems. Interactive labs and real-world examples included.",
+      id: 2,
+      title: "Advanced Calculus",
+      description: "Master differential and integral calculus with real-world applications",
       instructor: "Prof. Michael Chen",
-      duration: "10 weeks",
-      level: "Beginner",
-      category: "Science",
-      rating: 4.7,
-      students: 12350,
-      lessons: 35,
-      price: "Free",
-      thumbnail: "🧬",
-      skills: ["Cell Biology", "Genetics", "Evolution", "Ecology"]
-    },
-    {
-      id: "3",
-      title: "World History: Ancient Civilizations",
-      description: "Journey through ancient Egypt, Greece, Rome, and more. Discover how past civilizations shape our modern world.",
-      instructor: "Dr. Emily Rodriguez",
-      duration: "8 weeks",
-      level: "Beginner",
-      category: "History",
+      duration: "12 weeks",
+      level: "Advanced",
       rating: 4.9,
-      students: 8920,
-      lessons: 24,
-      price: "Free",
-      thumbnail: "🏛️",
-      skills: ["Ancient Egypt", "Greek Empire", "Roman History", "Timeline Analysis"]
+      students: 8930,
+      price: 149,
+      category: "Mathematics"
     },
     {
-      id: "4",
+      id: 3,
       title: "Creative Writing Workshop",
-      description: "Develop your storytelling skills with practical exercises, peer feedback, and professional guidance.",
-      instructor: "Jane Smith",
+      description: "Develop your storytelling skills and creative voice",
+      instructor: "Emma Thompson",
       duration: "6 weeks",
       level: "Intermediate",
-      category: "English",
-      rating: 4.6,
-      students: 5670,
-      lessons: 18,
-      price: "Free",
-      thumbnail: "✍️",
-      skills: ["Creative Writing", "Character Development", "Plot Structure", "Editing"]
-    },
-    {
-      id: "5",
-      title: "Chemistry Lab Techniques",
-      description: "Learn essential laboratory skills and safety procedures. Virtual experiments with real-world applications.",
-      instructor: "Dr. Robert Kim",
-      duration: "14 weeks",
-      level: "Advanced",
-      category: "Science",
-      rating: 4.8,
-      students: 4230,
-      lessons: 42,
-      price: "Free",
-      thumbnail: "⚗️",
-      skills: ["Lab Safety", "Titration", "Spectroscopy", "Data Analysis"]
-    },
-    {
-      id: "6",
-      title: "Statistics for Everyone",
-      description: "Make sense of data with practical statistics. From basic concepts to hypothesis testing and beyond.",
-      instructor: "Prof. Lisa Wang",
-      duration: "9 weeks",
-      level: "Beginner",
-      category: "Mathematics",
       rating: 4.7,
-      students: 9840,
-      lessons: 27,
-      price: "Free",
-      thumbnail: "📊",
-      skills: ["Descriptive Statistics", "Probability", "Hypothesis Testing", "Data Visualization"]
+      students: 5670,
+      price: 79,
+      category: "Arts",
+      progress: 30
+    },
+    {
+      id: 4,
+      title: "Organic Chemistry Fundamentals",
+      description: "Understand molecular structures and chemical reactions",
+      instructor: "Dr. Robert Martinez",
+      duration: "10 weeks",
+      level: "Intermediate",
+      rating: 4.6,
+      students: 12340,
+      price: 129,
+      category: "Science"
+    },
+    {
+      id: 5,
+      title: "World History: Ancient Civilizations",
+      description: "Explore the rise and fall of ancient empires and cultures",
+      instructor: "Prof. Lisa Anderson",
+      duration: "8 weeks",
+      level: "Beginner",
+      rating: 4.8,
+      students: 9870,
+      price: 89,
+      category: "History"
+    },
+    {
+      id: 6,
+      title: "Data Structures & Algorithms",
+      description: "Master fundamental programming concepts and problem-solving",
+      instructor: "Alex Rodriguez",
+      duration: "14 weeks",
+      level: "Intermediate",
+      rating: 4.9,
+      students: 18560,
+      price: 159,
+      category: "Technology",
+      progress: 85
     }
   ];
 
-  const categories = ["all", "Mathematics", "Science", "History", "English"];
+  const categories = ["All", "Technology", "Mathematics", "Science", "Arts", "History"];
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "all" || course.category === selectedCategory;
+                         course.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const enrolledCourses = courses.filter(course => course.progress !== undefined);
-  const availableCourses = courses.filter(course => course.progress === undefined);
 
   return (
-    <div className="pt-20 min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-20">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8 text-center">
+        <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Course Catalog
           </h1>
-          <p className="text-xl text-gray-600">Discover structured learning paths to master any subject</p>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Discover expert-led courses across various subjects and accelerate your learning journey
+          </p>
         </div>
 
-        {/* Search and Filter */}
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search courses, skills, or topics..."
-              className="pl-10 bg-white/80 backdrop-blur-sm"
-            />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? "bg-gradient-to-r from-blue-600 to-purple-600" : ""}
-              >
-                {category === "all" ? "All Categories" : category}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <Tabs defaultValue="browse" className="space-y-6">
-          <TabsList className="bg-white/70 backdrop-blur-sm">
+        <Tabs defaultValue="browse" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="browse">Browse Courses</TabsTrigger>
-            <TabsTrigger value="enrolled">My Courses ({enrolledCourses.length})</TabsTrigger>
+            <TabsTrigger value="enrolled">My Courses</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="browse" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TabsContent value="browse" className="space-y-8">
+            {/* Search and Filter */}
+            <div className="flex flex-col md:flex-row gap-4 mb-8">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Search courses..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTem(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    onClick={() => setSelectedCategory(category)}
+                    className="text-sm"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Course Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => (
-                <Card key={course.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
+                <Card key={course.id} className="bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="text-4xl mb-3">{course.thumbnail}</div>
-                      <Badge variant={course.level === "Beginner" ? "default" : course.level === "Intermediate" ? "secondary" : "destructive"}>
-                        {course.level}
-                      </Badge>
+                    <div className="flex justify-between items-start">
+                      <Badge variant="secondary">{course.level}</Badge>
+                      <div className="flex items-center text-yellow-500">
+                        <Star className="w-4 h-4 fill-current" />
+                        <span className="ml-1 text-sm font-medium">{course.rating}</span>
+                      </div>
                     </div>
                     <CardTitle className="text-lg leading-tight">{course.title}</CardTitle>
-                    <CardDescription className="text-sm text-gray-600">
-                      by {course.instructor}
+                    <CardDescription className="text-sm">
+                      {course.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-gray-700 leading-relaxed">{course.description}</p>
-                    
-                    <div className="flex flex-wrap gap-1">
-                      {course.skills.slice(0, 3).map((skill, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {course.skills.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{course.skills.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{course.duration}</span>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <BookOpen className="w-4 h-4 mr-1" />
+                          {course.instructor}
+                        </div>
+                        <div className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {course.duration}
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <BookOpen className="w-4 h-4" />
-                        <span>{course.lessons} lessons</span>
+                      <div className="flex items-center justify-between text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Users className="w-4 h-4 mr-1" />
+                          {course.students.toLocaleString()} students
+                        </div>
+                        <div className="font-semibold text-lg text-blue-600">
+                          ${course.price}
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Users className="w-4 h-4" />
-                        <span>{course.students.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-500" />
-                        <span>{course.rating}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="text-lg font-bold text-green-600">{course.price}</div>
-                      <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                         <Play className="w-4 h-4 mr-2" />
-                        Start Course
+                        Enroll Now
                       </Button>
                     </div>
                   </CardContent>
@@ -241,57 +208,105 @@ const CourseCatalog = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="enrolled" className="space-y-6">
-            {enrolledCourses.length === 0 ? (
-              <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
-                <CardContent>
-                  <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-xl font-semibold mb-2">No Enrolled Courses</h3>
-                  <p className="text-gray-600 mb-4">Start your learning journey by enrolling in a course!</p>
-                  <Button onClick={() => document.querySelector('[value="browse"]')?.click()}>
-                    Browse Courses
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {enrolledCourses.map((course) => (
-                  <Card key={course.id} className="bg-white/80 backdrop-blur-sm">
+          <TabsContent value="enrolled" className="space-y-8">
+            <div className="grid gap-6">
+              {enrolledCourses.length > 0 ? (
+                enrolledCourses.map((course) => (
+                  <Card key={course.id} className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
                     <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="text-3xl mb-2">{course.thumbnail}</div>
-                        <Badge variant="secondary">
-                          {course.progress}% Complete
-                        </Badge>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-xl">{course.title}</CardTitle>
+                          <CardDescription className="mt-2">
+                            Instructor: {course.instructor}
+                          </CardDescription>
+                        </div>
+                        <Badge variant="secondary">{course.level}</Badge>
                       </div>
-                      <CardTitle className="text-lg">{course.title}</CardTitle>
-                      <CardDescription>by {course.instructor}</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${course.progress}%` }}
-                        ></div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span>{Math.floor((course.progress! / 100) * course.lessons)} / {course.lessons} lessons</span>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium">Progress</span>
+                            <span className="text-sm text-gray-600">{course.progress}% complete</span>
+                          </div>
+                          <Progress value={course.progress} className="h-2" />
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{course.duration}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4 text-sm text-gray-600">
+                            <div className="flex items-center">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {course.duration}
+                            </div>
+                            <div className="flex items-center">
+                              <Users className="w-4 h-4 mr-1" />
+                              {course.students.toLocaleString()} students
+                            </div>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button variant="outline" size="sm">
+                              View Certificate
+                            </Button>
+                            <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600">
+                              Continue Learning
+                            </Button>
+                          </div>
                         </div>
                       </div>
-
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                        Continue Learning
-                      </Button>
                     </CardContent>
                   </Card>
-                ))}
+                ))
+              ) : (
+                <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+                  <CardContent className="text-center py-12">
+                    <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No Enrolled Courses</h3>
+                    <p className="text-gray-600 mb-6">
+                      Start your learning journey by enrolling in a course from our catalog
+                    </p>
+                    <Button 
+                      onClick={() => {
+                        const browseTrigger = document.querySelector('[data-state="inactive"]') as HTMLElement;
+                        browseTrigger?.click();
+                      }}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600"
+                    >
+                      Browse Courses
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Learning Stats */}
+            {enrolledCourses.length > 0 && (
+              <div className="grid md:grid-cols-3 gap-6 mt-12">
+                <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg text-center">
+                  <CardContent className="pt-6">
+                    <Award className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold">
+                      {enrolledCourses.filter(c => (c.progress || 0) > 90).length}
+                    </h3>
+                    <p className="text-gray-600">Courses Completed</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg text-center">
+                  <CardContent className="pt-6">
+                    <TrendingUp className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold">
+                      {Math.round(enrolledCourses.reduce((acc, course) => acc + (course.progress || 0), 0) / enrolledCourses.length)}%
+                    </h3>
+                    <p className="text-gray-600">Average Progress</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg text-center">
+                  <CardContent className="pt-6">
+                    <CheckCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold">{enrolledCourses.length}</h3>
+                    <p className="text-gray-600">Active Courses</p>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </TabsContent>
